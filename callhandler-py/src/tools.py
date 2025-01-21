@@ -1,4 +1,3 @@
-from typing import Callable
 from openai.types.chat import ChatCompletionToolParam
 from pipecat.services.openai import OpenAILLMService
 
@@ -9,7 +8,7 @@ tools = [
             "name": "hang_up",
             "description": "Hang up the call when user no longer has any other questions",
         },
-    ), 
+    ),
     ChatCompletionToolParam(
         type="function",
         function={
@@ -29,7 +28,7 @@ tools = [
                 },
                 "required": ["full_name", "phone_number"],
             },
-        }
+        },
     ),
     ChatCompletionToolParam(
         type="function",
@@ -45,35 +44,32 @@ tools = [
                     },
                 },
             },
-        }
-    ), 
+        },
+    ),
 ]
+
 
 def register_tools(llm: OpenAILLMService):
     open_slot = 0
-    async def register_for_event(function_name, tool_call_id, args, llm, context, result_callback):
+
+    async def register_for_event(
+        function_name, tool_call_id, args, llm, context, result_callback
+    ):
         if open_slot > 0:
             await result_callback({"status": "success"})
         else:
             await result_callback({"status": "failed", "reason": "event is full"})
 
+    llm.register_function("register_for_event", register_for_event)
 
-    llm.register_function(
-        "register_for_event",
-        register_for_event
-    )
-
-    async def check_event_availability(function_name, tool_call_id, args, llm, context, result_callback):
+    async def check_event_availability(
+        function_name, tool_call_id, args, llm, context, result_callback
+    ):
         await result_callback({"open_slot_count": open_slot})
 
-    llm.register_function(
-        "check_event_availability",
-        check_event_availability
-    )
+    llm.register_function("check_event_availability", check_event_availability)
+
 
 def register_function(llm: OpenAILLMService, name: str, action):
     # Register the function
-    llm.register_function(
-        name,
-        action
-    )
+    llm.register_function(name, action)

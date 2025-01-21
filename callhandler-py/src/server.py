@@ -27,7 +27,9 @@ app.add_middleware(
 @app.post("/")
 async def start_call():
     print("POST TwiML")
-    return HTMLResponse(content=open("src/streams.xml").read(), media_type="application/xml")
+    return HTMLResponse(
+        content=open("src/streams.xml").read(), media_type="application/xml"
+    )
 
 
 @app.websocket("/ws")
@@ -41,10 +43,12 @@ async def websocket_endpoint(websocket: WebSocket):
     call_sid = call_data["start"]["callSid"]
     print("WebSocket connection accepted")
     await run_bot(websocket, stream_sid)
-    client.calls(call_sid).update(status='completed')
+    client.calls(call_sid).update(status="completed")
+
 
 def main():
     uvicorn.run(app, host="0.0.0.0", port=8765)
+
 
 if __name__ == "__main__":
     main()

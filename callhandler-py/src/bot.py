@@ -75,7 +75,9 @@ async def run_bot(websocket_client, stream_sid):
     @transport.event_handler("on_client_connected")
     async def on_client_connected(transport, client):
         # Kick off the conversation.
-        messages.append({"role": "system", "content": "Please introduce yourself to the user."})
+        messages.append(
+            {"role": "system", "content": "Please introduce yourself to the user."}
+        )
         await task.queue_frames([LLMMessagesFrame(messages)])
 
     @transport.event_handler("on_client_disconnected")
@@ -83,7 +85,12 @@ async def run_bot(websocket_client, stream_sid):
         await task.queue_frames([EndFrame()])
 
     async def hang_up(function_name, tool_call_id, args, llm, context, result_callback):
-        messages.append({"role": "system", "content": "You are about to hang up this call. Let the user know that they can call back at any time if they need any help."})
+        messages.append(
+            {
+                "role": "system",
+                "content": "You are about to hang up this call. Let the user know that they can call back at any time if they need any help.",
+            }
+        )
         await task.queue_frames([LLMMessagesFrame(messages)])
         await task.queue_frames([EndFrame()])
 
