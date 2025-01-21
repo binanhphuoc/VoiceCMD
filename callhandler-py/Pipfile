@@ -4,12 +4,20 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-
-[dev-packages]
+pipecat-ai = {extras = ["deepgram", "cartesia", "openai", "silero"], version = "*"}
+fastapi = "*"
+uvicorn = "*"
+python-dotenv = "*"
+loguru = "*"
+openai = "*"
+twilio = "*"
 
 [requires]
 python_version = "3.10"
 python_full_version = "3.10.12"
 
 [scripts]
-start = "python app.py"
+dev = "watchmedo shell-command --patterns='src/*' --recursive --command='python src/server.py' ."
+
+[dev-packages]
+watchdog = {extras = ["watchmedo"], version = "*"}
